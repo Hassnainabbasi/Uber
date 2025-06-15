@@ -1,20 +1,31 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import images from "../constant/image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserDataContext } from "../context/userContext";
+import axios from "axios";
+import BASE_URL from "../../constant";
 
 export const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState({});
+  const {user, setUser} = useContext(UserDataContext)
+  const navigate = useNavigate()
 
-  const handleSumbit = (e) => {
+  const handleSumbit = async(e) => {
     e.preventDefault();
-    const data = {
+    const userdata = {
       email: email,
       password: password,
     };
-    setUserData(data);
-    console.log("console.log", userData);
+
+    const res = await axios.post(`${BASE_URL}users/login`, userdata)
+    if(res.status === 200){
+      const data = res.data
+      setUser(data.user)
+      localStorage.setItem('token',data.token)
+      navigate('/home')
+    }
 
     setEmail("");
     setPassword("");

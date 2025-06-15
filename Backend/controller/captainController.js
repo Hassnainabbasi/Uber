@@ -26,7 +26,7 @@ module.exports.registerCaptain = async (req, res) => {
     plate: vechile.plate,
     capacity: vechile.capacity,
     vechileType: vechile.vechileType,
-  });
+  });   
 
   const token = captain.generateAuthToken();
   res.status(201).json({ token, captain });

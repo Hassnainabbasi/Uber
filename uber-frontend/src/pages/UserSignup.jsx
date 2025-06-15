@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import images from "../constant/image";
+import axios from "axios";
+import BASE_URL from "../../constant";
+import { UserDataContext } from "../context/userContext";
 
 export const UserSignup = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState({});
+  const { user, setUser } = useContext(UserDataContext);
 
-  const handleSumbit = (e) => {
+  const handleSumbit = async (e) => {
     e.preventDefault();
-    const data = {
+    const newUser = {
       fullName: {
         firstName: firstName,
         lastName: lastName,
@@ -20,14 +24,22 @@ export const UserSignup = () => {
       email: email,
       password: password,
     };
-    setUserData(data);
-    console.log("console.log", userData);
+    setUserData(newUser);
+
+    const res = await axios.post(`${BASE_URL}users/register`, newUser);
+    if (res.status === 201) {
+      const data = res.data;
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
+      navigate("/login");
+    }
 
     setEmail("");
     setPassword("");
     setFirstName("");
     setLastName("");
   };
+
   return (
     <div>
       <div className="p-7 h-screen flex flex-col justify-between">
@@ -88,7 +100,7 @@ export const UserSignup = () => {
               id=""
             />
             <button className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2  w-full text-lg placeholder:text-base">
-              Login
+              Create account
             </button>
             <p className="text-center">
               Already have an account?
