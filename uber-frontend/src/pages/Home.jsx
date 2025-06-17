@@ -4,13 +4,28 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import "remixicon/fonts/remixicon.css";
 import { LocationPannel } from "../components/LocationPannel";
+import { VechilePannel } from "../components/VechilePannel";
+import { ConfirmVechile } from "../components/ConfirmVechile";
+import { LookingforDriver } from "../components/LookingforDriver";
+import { WaitforDriver } from "../components/WaitforDriver";
 
 export const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [pannelOpen, setPannelOpen] = useState(false);
+  const [driverPannel, setDriverPannel] = useState(false);
   const pannelRef = useRef(null);
-  const pannelCloseRef = useRef(null);
+  const pannelCloseRef = useRef(null);  
+  const vechilePannelRef = useRef(null)
+  const driverPannelRef = useRef(null);
+  const vechileFoundRef = useRef(null);
+  const confirmPannelRef = useRef(null);
+  const [vechile, setVechile] = useState(false);
+  const [confirmVechile, setConfirmVechile] = useState(false);
+  const [vechileFound, setVechileFound] = useState(false);
+
+
+  console.log("VechilePannel rendered", vechileFound);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,6 +53,56 @@ export const Home = () => {
     }
   }, [pannelOpen]);
 
+  useGSAP(()=>{
+   if (vechile) {
+    gsap.to(vechilePannelRef.current, {
+      transform: "translateY(0)",
+    });
+   }
+   else{
+    gsap.to(vechilePannelRef.current, {
+      transform: "translateY(100%)",
+    });
+   }
+  },[vechile])
+
+  useGSAP(() => {
+    if (confirmVechile) {
+      gsap.to(confirmPannelRef.current, {
+        transform: "translateY(0)",
+      });
+    } else {
+      gsap.to(confirmPannelRef.current, {
+        transform: "translateY(100%)",
+      });
+    }
+  }, [confirmVechile]);
+
+  useGSAP(() => {
+    if (vechileFound) {
+      gsap.to(vechileFoundRef.current, {
+        transform: "translateY(0)",
+      });
+    } else {
+      gsap.to(vechileFoundRef.current, {
+        transform: "translateY(100%)",
+      });
+    }
+  }, [vechileFound]);
+
+  useGSAP(() => {
+    if (driverPannel) {
+      gsap.to(driverPannelRef.current, {
+        transform: "translateY(0)",
+      });
+    } else {
+      gsap.to(driverPannelRef.current, {
+        transform: "translateY(100%)",
+      });
+    }
+  }, [driverPannel]);
+
+
   return (
     <div className="h-screen relative overflow-hidden">
       <img className="w-20 absolute left-5 top-5" src={images.logo} alt="" />
@@ -48,14 +113,14 @@ export const Home = () => {
           alt=""
         />
       </div>
-      <div className="flex flex-col justify-end absolute h-full top-0 w-full">
+      <div className="flex flex-col justify-end absolute h-[106%] top-0 w-screen">
         <div className="h-[30%] p-6 bg-white relative">
           <h5
             ref={pannelCloseRef}
             onClick={() => setPannelOpen(false)}
             className="absolute  top-6 right-6 opacity-0 text-2xl"
           >
-            <i class="ri-arrow-down-wide-line"></i>
+            <i className="ri-arrow-down-wide-line"></i>
           </h5>
           <h4 className="text-3xl font-semibold">Find a trip</h4>
           <form
@@ -89,75 +154,44 @@ export const Home = () => {
           </form>
         </div>
         <div ref={pannelRef} className="h-[0%] bg-white p-5">
-          <LocationPannel />
+          <LocationPannel
+            vechilePannel={vechile}
+            setVechilePannel={setVechile}
+            setPannelOpen={setPannelOpen}
+            pannelOpen={pannelOpen}
+          />
         </div>
       </div>
-      <div className="fixed w-full z-10 bottom-0 bg-white px-3 py-6">
-        <h3 className="text-xl font-semibold mb-5">Choose a Vechile</h3>
-        <div className="flex bg-gray-100 mb-2 active:border-2 active:border-black rounded-xl w-full p-3 items-center justify-between">
-          <img className="h-12" src={images.car} alt="" />
-          <div className="w-1/2">
-            <h4 className="font-medium text-base">
-              UberGo{" "}
-              <span>
-                <i className="ri-user-3-fill">4</i>
-              </span>
-            </h4>
-            <h5 className="font-medium text-sm">2 mins away</h5>
-            <p className="font-normal text-xs text-gray-600">
-              Affordable, Car Rides
-            </p>
-          </div>
-          <h2 className="text-xl font-semibold">Rs300</h2>
-        </div>
-        <div className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between">
-          <img className="h-12" src={images.motorbike} alt="" />
-          <div className="ml-2 w-1/2">
-            <h4 className="font-medium text-base">
-              UberGo{" "}
-              <span>
-                <i className="ri-user-3-fill">1</i>
-              </span>
-            </h4>
-            <h5 className="font-medium text-sm">2 mins away</h5>
-            <p className="font-normal text-xs text-gray-600">
-              Affordable, Motorcycle Rides
-            </p>
-          </div>
-          <h2 className="text-xl font-semibold">Rs150</h2>
-        </div>
-        <div className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between">
-          <img className="h-12" src={images.auto} alt="" />
-          <div className="w-1/2">
-            <h4 className="font-medium text-base">
-              UberGo{" "}
-              <span>
-                <i className="ri-user-3-fill">4</i>
-              </span>
-            </h4>
-            <h5 className="font-medium text-sm">2 mins away</h5>
-            <p className="font-normal text-xs text-gray-600">
-              Affordable, Rickshaw Rides
-            </p>
-          </div>
-          <h2 className="text-xl font-semibold">Rs200</h2>
-        </div>
-        <div className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between">
-          <img className="h-12" src={images.blackCar} alt="" />
-          <div className="w-1/2">
-            <h4 className="font-medium text-base">
-              UberGo{" "}
-              <span>
-                <i className="ri-user-3-fill">4</i>
-              </span>
-            </h4>
-            <h5 className="font-medium text-sm">2 mins away</h5>
-            <p className="font-normal text-xs text-gray-600">
-              Affordable, Mercedies Rides
-            </p>
-          </div>
-          <h2 className="text-xl font-semibold">Rs500</h2>
-        </div>
+      <div
+        ref={vechilePannelRef}
+        className="fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10"
+      >
+        <VechilePannel
+          setConfirmVechile={setConfirmVechile}
+          setVechile={setVechile}
+        />
+      </div>
+      <div
+        ref={confirmPannelRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 bg-white px-3 py-6 pt-14"
+      >
+        <ConfirmVechile
+          setConfirmVechile={setConfirmVechile}
+          setVechile={setVechile}
+          setVechileFound={setVechileFound}
+        />
+      </div>
+      <div
+        ref={vechileFoundRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 bg-white px-3 py-6 pt-14"
+      >
+        <LookingforDriver setVechilFound={setVechileFound} />
+      </div>
+      <div
+       ref={driverPannelRef}
+        className="fixed w-full z-10  bottom-0 bg-white px-3 py-6 pt-14"
+      >
+        <WaitforDriver waitingDriver={setDriverPannel} setVechilFound={setVechileFound} />
       </div>
     </div>
   );
