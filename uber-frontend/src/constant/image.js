@@ -5,7 +5,9 @@ const images = {
   car: "/img/car.png",
   blackCar: "/img/UberBlack-removebg-preview.png",
   motorbike: '/img/UberMoto.png',
-  auto : '/img/UberAuto.png'
+  auto : '/img/UberAuto.png',
+  driver : '/img/driverBoy.jpg',
+
 };
 
 export default images;
