@@ -25,7 +25,7 @@ export const WaitforDriver = ({ waitingDriver, ride }) => {
             {ride?.captain?.vechile?.vechileType}
           </p>
           <p className="text-base font-bold text-gray-900">
-            {ride?.otp}
+           Otp: {ride?.otp}
           </p>
         </div>
       </div>
