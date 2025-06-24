@@ -12,6 +12,7 @@ import axios from "axios";
 import { SocketContext } from "../context/socketContext";
 import { UserDataContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../constant";
 
 export const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -86,7 +87,7 @@ export const Home = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "http://localhost:4000/maps/get-suggestions",
+        `${BASE_URL}maps/get-suggestions`,
         {
           params: { input: query },
           headers: {
@@ -104,7 +105,7 @@ export const Home = () => {
   const findTrip = async (e) => {
     setVechile(true);
     setPannelOpen(false);
-    const res = await axios.get(`http://localhost:4000/rides/get-fare`, {
+    const res = await axios.get(`${BASE_URL}rides/get-fare`, {
       params: {
         pickup,
         destination,
@@ -119,7 +120,7 @@ export const Home = () => {
 
   const createRide = async () => {
     const res = await axios.post(
-      `http://localhost:4000/rides/create`,
+      `${BASE_URL}rides/create`,
       {
         pickup,
         destination,
