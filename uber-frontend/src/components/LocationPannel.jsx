@@ -5,34 +5,28 @@ export const LocationPannel = ({
   setVechilePannel,
   pannelOpen,
   setPannelOpen,
+  suggestions = [],
+  onSuggestionClick,
 }) => {
-  const locations = [
-    "F292, Near Rado Bakery, Bag-e-Korangi, Karachi",
-    "F242, Near Gohar Bakery, Bag-e-Korangi, Karachi",
-    "F262, Near Norani Hotel, Bag-e-Korangi, Karachi",
-    "F292, Near Rado Bakery, Bag-e-Korangi, Karachi",
-    "F242, Near Gohar Bakery, Bag-e-Korangi, Karachi",
-    "F262, Near Norani Hotel, Bag-e-Korangi, Karachi",
-    "F222, Near Rado Bakery, Bag-e-Korangi, Karachi",
-    "F292, Near Rado Bakery, Bag-e-Korangi, Karachi",
-    "F292, Near Rado Bakery, Bag-e-Korangi, Karachi",
-  ];
   return (
     <div>
-      {locations.map((location, index) => (
+      {suggestions.length === 0 && (
+        <div className="text-gray-400 text-center py-4">No suggestions</div>
+      )}
+      {suggestions.map((location, index) => (
         <div
-          onClick={() =>{
-            setVechilePannel(true);
-            setPannelOpen(false);
-          }
-          }
+          onClick={() => {
+            // setVechilePannel(true);
+            // setPannelOpen(false);
+            onSuggestionClick(location.description); 
+          }}
           key={index}
-          className="items-center gap-2 border-2 rounded-xl border-gray-100 active:border-black p-3 flex my-4 justify-center"
+          className="items-center gap-2 border-2 rounded-xl border-gray-100 active:border-black p-3 flex my-4 cursor-pointer"
         >
           <h2 className="bg-[#eee] h-10 flex items-center justify-center w-12 rounded-full">
             <i className="ri-map-pin-fill"></i>
           </h2>
-          <h4 className="font-medium">{location}</h4>
+          <h4 className="font-medium">{location.description}</h4>{" "}
         </div>
       ))}
     </div>

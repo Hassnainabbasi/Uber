@@ -1,7 +1,13 @@
-import React from 'react'
-import images from '../constant/image';
+import React from "react";
+import images from "../constant/image";
 
-export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
+export const VechilePannel = ({
+  setVechile,
+  setConfirmVechile,
+  fare,
+  setVechileType
+}) => {
+  // console.log("VechilePannel rendered", fare);
   return (
     <>
       <div>
@@ -14,8 +20,9 @@ export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
         <h3 className="text-xl font-semibold mb-5">Choose a Vechile</h3>
         <div
           onClick={() => {
-            setConfirmVechile(true)
-            setVechile(false)
+            setConfirmVechile(true);
+            setVechileType("car");
+            setVechile(false);
           }}
           className="flex bg-gray-100 mb-2 active:border-2 active:border-black rounded-xl w-full p-3 items-center justify-between"
         >
@@ -32,12 +39,13 @@ export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
               Affordable, Car Rides
             </p>
           </div>
-          <h2 className="text-xl font-semibold">Rs300</h2>
+          <h2 className="text-xl font-semibold">Rs{fare.car}</h2>
         </div>
         <div
           onClick={() => {
-            setConfirmVechile(true)
-            setVechile(false)
+            setConfirmVechile(true);
+            setVechileType("moto");
+            setVechile(false);
           }}
           className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between"
         >
@@ -54,12 +62,13 @@ export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
               Affordable, Motorcycle Rides
             </p>
           </div>
-          <h2 className="text-xl font-semibold">Rs150</h2>
+          <h2 className="text-xl font-semibold">{fare.moto}</h2>
         </div>
         <div
           onClick={() => {
-            setConfirmVechile(true)
-            setVechile(false)
+            setConfirmVechile(true);
+            setVechileType("auto");
+            setVechile(false);
           }}
           className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between"
         >
@@ -76,12 +85,13 @@ export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
               Affordable, Rickshaw Rides
             </p>
           </div>
-          <h2 className="text-xl font-semibold">Rs200</h2>
+          <h2 className="text-xl font-semibold">{fare.auto}</h2>
         </div>
         <div
           onClick={() => {
-            setConfirmVechile(true)
-            setVechile(false)
+            setConfirmVechile(true);
+            setVechileType("car");
+            setVechile(false);
           }}
           className="flex bg-gray-100 active:border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between"
         >
@@ -98,9 +108,9 @@ export const VechilePannel = ({ setVechile, setConfirmVechile }) => {
               Affordable, Mercedies Rides
             </p>
           </div>
-          <h2 className="text-xl font-semibold">Rs500</h2>
+          <h2 className="text-xl font-semibold">Rs{fare.car}</h2>
         </div>
       </div>
     </>
   );
-}
+};

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import images from "../constant/image";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "remixicon/fonts/remixicon.css";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -9,6 +9,8 @@ import { FinishRide } from "../components/FinishRide";
 export const CaptainRiding = () => {
   const [finishRidePopPannel, setfinishRidePopPannel] = useState(false);
   const finishRidePopPannelRef = useRef(null);
+  const location = useLocation()
+  const rideData = location.state?.ride
 
   useGSAP(() => {
     if (finishRidePopPannel) {
@@ -56,7 +58,7 @@ export const CaptainRiding = () => {
         ref={finishRidePopPannelRef}
         className="fixed w-full z-10 translate-y-full bottom-0 bg-white px-3 py-6 "
       >
-        <FinishRide setFinishRide={setfinishRidePopPannel} />
+        <FinishRide rideData={rideData} setFinishRide={setfinishRidePopPannel} />
       </div>
     </div>
   );

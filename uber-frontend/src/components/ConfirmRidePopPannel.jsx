@@ -1,13 +1,36 @@
 import React, { useState } from "react";
 import images from "../constant/image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import BASE_URL from "../../constant";
 
-export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel }) => {
-    const [otp, setOtp] = useState('')
-    const handleSubmit = (e) => {
-    e.preventDefault(); 
+export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel, ride }) => {
+  const [otp, setOtp] = useState("");
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     console.log("OTP submitted:", otp);
+
+    const res = await axios.post(
+      `${BASE_URL}rides/start-ride`,
+      {
+        rideId: ride._id,
+        otp: otp,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if(res.status === 200){
+      setConfirmRidePopPannel(false)
+      navigate('/captain-riding',{ state : { ride :ride } })
     }
+
+  };
   return (
     <>
       <div className="">
@@ -27,7 +50,11 @@ export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel }) => {
               className="h-12 w-12 rounded-full object-cover"
               alt=""
             />
-            <h2 className="font-medium text-lg">Hassnain</h2>
+            <h2 className="font-medium text-lg">
+              {ride?.user?.fullName?.firstName +
+                " " +
+                ride?.user?.fullName?.lastName}
+            </h2>
           </div>
           <p className="text-lg font-medium">2.2 KM</p>
         </div>
@@ -38,9 +65,7 @@ export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel }) => {
               <i className="text-lg ri-map-pin-user-fill"></i>
               <div>
                 <h3 className="text-lg font-medium">562/11-A</h3>
-                <h3 className="text-gray-600 text-sm -mt-1">
-                  Qalandari Biryan, North Karachi
-                </h3>
+                <h3 className="text-gray-600 text-sm -mt-1">{ride?.pickup}</h3>
               </div>
             </div>
             <div className="flex items-center gap-5 p-3 border-b">
@@ -48,14 +73,14 @@ export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel }) => {
               <div>
                 <h3 className="text-lg font-medium">B-17/3</h3>
                 <h3 className="text-gray-600 text-sm -mt-1">
-                  Opp. Madni Bakery, Nazimabad No. 3
+                  {ride?.destination}
                 </h3>
               </div>
             </div>
             <div className="flex items-center gap-5 p-3">
               <i className="text-lg ri-currency-line"></i>
               <div>
-                <h3 className="text-lg font-medium">Rs 250</h3>
+                <h3 className="text-lg font-medium">Rs {ride?.fare}</h3>
                 <h3 className="text-gray-600 text-sm -mt-1">Cash Cash</h3>
               </div>
             </div>
@@ -69,15 +94,13 @@ export const ConfirmRidePopPannel = ({ setConfirmRidePopPannel }) => {
                 onChange={(e) => setOtp(e.target.value)}
                 placeholder="Enter OTP"
               />
-              <Link
-                className="w-full"
-                to={"/captain-riding"}
+              <button
+                type="submit"
                 onClick={() => setConfirmRidePopPannel(false)}
+                className="w-full bg-green-600 text-white font-semibold p-2 rounded-lg"
               >
-                <button className="w-full bg-green-600 text-white font-semibold p-2 rounded-lg">
-                  Confirm
-                </button>
-              </Link>
+                Confirm
+              </button>
               <button
                 onClick={() => setConfirmRidePopPannel(false)}
                 className="w-full mt-3 bg-red-600 text-white font-semibold p-2 rounded-lg"

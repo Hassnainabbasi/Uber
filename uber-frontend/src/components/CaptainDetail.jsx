@@ -1,7 +1,10 @@
-import React from 'react'
-import images from '../constant/image';
+import React, { useContext } from "react";
+import images from "../constant/image";
+import { CaptainDataContext } from "../context/captainContext";
 
 export const CaptainDetail = () => {
+  const { captain } = useContext(CaptainDataContext);
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -11,7 +14,9 @@ export const CaptainDetail = () => {
             src={images.driver}
             alt=""
           />
-          <h4 className="font-medium text-lg">Imad Wasim</h4>
+          <h4 className="font-medium text-lg capitalize">
+            {captain.fullName.firstName + " " + captain.fullName.lastName}
+          </h4>
         </div>
         <div>
           <h4 className="text-xl font-semibold">Rs400.19</h4>
@@ -37,4 +42,4 @@ export const CaptainDetail = () => {
       </div>
     </>
   );
-}
+};

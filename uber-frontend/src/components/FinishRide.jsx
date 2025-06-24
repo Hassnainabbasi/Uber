@@ -1,8 +1,31 @@
 import React from "react";
 import images from "../constant/image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import BASE_URL from "../../constant";
 
-export const FinishRide = ({ setFinishRide }) => {
+export const FinishRide = ({ setFinishRide, rideData }) => {
+  console.log(rideData, "thi");
+  const navigate = useNavigate()
+  const endRide = async () => {
+    const res = await axios.post(
+      `${BASE_URL}rides/end-ride`,
+      {
+        rideId: rideData._id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      setFinishRide(false);
+      navigate('/captain-home')
+
+    }
+  };
   return (
     <div className="h-screen">
       <h5 className="p-1 text-center w-[93%] absolute top-0">
@@ -16,7 +39,11 @@ export const FinishRide = ({ setFinishRide }) => {
             className="h-12 w-12 rounded-full object-cover"
             alt=""
           />
-          <h2 className="font-medium text-lg">Hassnain</h2>
+          <h2 className="font-medium text-lg">
+            {rideData?.user?.fullName?.firstName +
+              " " +
+              rideData?.user?.fullName?.lastName}
+          </h2>
         </div>
         <p className="text-lg font-medium">2.2 KM</p>
       </div>
@@ -28,7 +55,7 @@ export const FinishRide = ({ setFinishRide }) => {
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <h3 className="text-gray-600 text-sm -mt-1">
-                Qalandari Biryan, North Karachi
+                {rideData?.pickup}
               </h3>
             </div>
           </div>
@@ -37,24 +64,30 @@ export const FinishRide = ({ setFinishRide }) => {
             <div>
               <h3 className="text-lg font-medium">B-17/3</h3>
               <h3 className="text-gray-600 text-sm -mt-1">
-                Opp. Madni Bakery, Nazimabad No. 3
+                {rideData?.destination}
               </h3>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3">
             <i className="text-lg ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">Rs 250</h3>
+              <h3 className="text-lg font-medium">{rideData?.fare}</h3>
               <h3 className="text-gray-600 text-sm -mt-1">Cash Cash</h3>
             </div>
           </div>
         </div>
-        <div className="mt-6">
-          <Link to={'/captain-home'} className="w-screen px-2 flex">
-            <button onClick={()=> setFinishRide(false)} className="w-full bg-green-600 text-white font-semibold p-2 rounded-lg">
-              Finish Ride
-            </button>
-          </Link>
+        <div className="mt-6 w-full">
+          <button
+            onClick={() => {
+              endRide();
+            }}
+            className="w-full flex justify-center bg-green-600 text-white font-semibold p-2 rounded-lg"
+          >
+            Finish Ride
+          </button>
+          <p className=" mt-10 text-xs px-2">
+            Click on finsih ride if you have complete the payment
+          </p>
         </div>
       </div>
     </div>

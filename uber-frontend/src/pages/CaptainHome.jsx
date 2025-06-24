@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import images from "../constant/image";
 import { CaptainDetail } from "../components/CaptainDetail";
@@ -6,16 +6,23 @@ import { RidePopup } from "../components/RidePopup";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ConfirmRidePopPannel } from "../components/ConfirmRidePopPannel";
+import { Map } from "../components/Map";
+import { CaptainDataContext } from "../context/captainContext";
+import { SocketContext } from "../context/socketContext";
+import { Socket } from "socket.io-client";
+import axios from "axios";
+import BASE_URL from "../../constant";
 
 export const CaptainHome = () => {
-  const [ridePopPannel, setRidePopPannel] = useState(true);
+  const [ridePopPannel, setRidePopPannel] = useState(false);
   const [confirmRidePopPannel, setConfirmRidePopPannel] = useState(false);
+  const [ride, setRide] = useState(null);
 
   console.log("RidePopPannel rendered", ridePopPannel);
   console.log("ConfirmRidePopPannel rendered", confirmRidePopPannel);
   const ridePopPannelRef = useRef(null);
   const confirmRidePopPannelRef = useRef(null);
-  
+
   useGSAP(() => {
     if (confirmRidePopPannel) {
       gsap.to(confirmRidePopPannelRef.current, {
@@ -27,18 +34,80 @@ export const CaptainHome = () => {
       });
     }
   }, [confirmRidePopPannel]);
-  
+
   useGSAP(() => {
     if (ridePopPannel) {
       gsap.to(ridePopPannelRef.current, {
-       transform: "translateY(0)",
+        transform: "translateY(0)",
       });
     } else {
       gsap.to(ridePopPannelRef.current, {
-       transform: "translateY(100%)",
+        transform: "translateY(100%)",
       });
     }
   }, [ridePopPannel]);
+
+  const { captain } = useContext(CaptainDataContext);
+  const { socket, sendMessage, receiveMessage } = useContext(SocketContext);
+
+  useEffect(() => {
+    if (!captain) return;
+    sendMessage("join", {
+      userId: captain._id,
+      userType: "captain",
+    });
+
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((postion) => {
+          console.log({
+            userId: captain._id,
+            location: {
+              ltd: postion.coords.latitude,
+              lang: postion.coords.longitude,
+            },
+          });
+          sendMessage("update-location-captain", {
+            userId: captain._id,
+            location: {
+              ltd: postion.coords.latitude,
+              lang: postion.coords.longitude,
+            },
+          });
+        });
+      }
+    };
+    const locationInterval = setInterval(updateLocation, 5000);
+    return () => clearInterval(locationInterval);
+  }, [captain, sendMessage]);
+
+  useEffect(() => {
+    const off = receiveMessage("new-ride", (data) => {
+      console.log(data);
+      setRide(data);
+      setRidePopPannel(true);
+    });
+    return off;
+  }, [receiveMessage]);
+
+  const confirmRide = async () => {
+
+    const res = await axios.post(
+      `${BASE_URL}rides/confirm`,
+      {
+        rideId: ride._id,
+        captain: captain._id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    setRidePopPannel(false);
+    setConfirmRidePopPannel(true);
+  };
 
   return (
     <div className="h-screen">
@@ -57,6 +126,7 @@ export const CaptainHome = () => {
           src={images.mapsImg}
           alt=""
         />
+        {/* <Map /> */}
       </div>
       {/* <div className="h-1/2 p-4 ">
         <div className="flex items-center justify-between">
@@ -95,13 +165,21 @@ export const CaptainHome = () => {
         ref={ridePopPannelRef}
         className="fixed w-full z-10 translate-y-full bottom-0 bg-white px-3 py-6 "
       >
-        <RidePopup setRidePopPannel={setRidePopPannel} setConfirmRidePopPannel={setConfirmRidePopPannel}/>
+        <RidePopup
+          setRidePopPannel={setRidePopPannel}
+          setConfirmRidePopPannel={setConfirmRidePopPannel}
+          ride={ride}
+          confirmRide={confirmRide}
+        />
       </div>
       <div
         ref={confirmRidePopPannelRef}
         className="fixed w-full z-10 h-screen translate-y-full bottom-0 bg-white px-3 py-6 "
       >
-        <ConfirmRidePopPannel setConfirmRidePopPannel={setConfirmRidePopPannel} />
+        <ConfirmRidePopPannel
+         ride={ride}
+          setConfirmRidePopPannel={setConfirmRidePopPannel}
+        />
       </div>
     </div>
   );
