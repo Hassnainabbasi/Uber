@@ -5,6 +5,7 @@ import "remixicon/fonts/remixicon.css";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { FinishRide } from "../components/FinishRide";
+import { LiveTracking } from "../components/LiveTracking";
 
 export const CaptainRiding = () => {
   const [finishRidePopPannel, setfinishRidePopPannel] = useState(false);
@@ -26,21 +27,8 @@ export const CaptainRiding = () => {
 
   return (
     <div className="h-screen">
-      <div className="fixed p-3 top-0 flex items-center justify-between w-full">
-        <img className="w-16" src={images.logo} alt="" />
-        <Link
-          to={"/captain-home"}
-          className=" h-10 w-10 bg-white flex items-center justify-center rounded-full"
-        >
-          <i className="ri-logout-box-r-line"></i>
-        </Link>
-      </div>
       <div className="h-4/5">
-        <img
-          className="h-full w-full object-cover"
-          src={images.mapsImg}
-          alt=""
-        />
+      <LiveTracking />
       </div>
       <div
         className="h-1/5 bg-yellow-400 p-6 flex relative

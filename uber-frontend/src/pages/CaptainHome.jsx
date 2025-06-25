@@ -12,6 +12,7 @@ import { SocketContext } from "../context/socketContext";
 import { Socket } from "socket.io-client";
 import axios from "axios";
 import BASE_URL from "../../constant";
+import { LiveTracking } from "../components/LiveTracking";
 
 export const CaptainHome = () => {
   const [ridePopPannel, setRidePopPannel] = useState(false);
@@ -91,7 +92,6 @@ export const CaptainHome = () => {
   }, [receiveMessage]);
 
   const confirmRide = async () => {
-
     const res = await axios.post(
       `${BASE_URL}rides/confirm`,
       {
@@ -120,12 +120,8 @@ export const CaptainHome = () => {
           <i className="ri-logout-box-r-line"></i>
         </Link>
       </div>
-      <div className="h-3/5">
-        <img
-          className="h-full w-full object-cover"
-          src={images.mapsImg}
-          alt=""
-        />
+      <div className="h-3/5 overflow-hidden">
+        <LiveTracking />
         {/* <Map /> */}
       </div>
       {/* <div className="h-1/2 p-4 ">
@@ -177,7 +173,7 @@ export const CaptainHome = () => {
         className="fixed w-full z-10 h-screen translate-y-full bottom-0 bg-white px-3 py-6 "
       >
         <ConfirmRidePopPannel
-         ride={ride}
+          ride={ride}
           setConfirmRidePopPannel={setConfirmRidePopPannel}
         />
       </div>

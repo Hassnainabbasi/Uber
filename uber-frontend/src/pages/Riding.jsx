@@ -3,6 +3,7 @@ import images from "../constant/image";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/socketContext";
 import { UserDataContext } from "../context/userContext";
+import { LiveTracking } from "../components/LiveTracking";
 
 export const Riding = () => {
   const location = useLocation();
@@ -39,11 +40,7 @@ export const Riding = () => {
         <i className="ri-home-4-line text-lg font-medium"></i>
       </Link>
       <div className="h-1/2">
-        <img
-          className="h-full w-full object-cover"
-          src={images.mapsImg}
-          alt=""
-        />
+       <LiveTracking />
       </div>
       <div className="h-1/2 p-4 ">
         <div className="flex items-center justify-between">
